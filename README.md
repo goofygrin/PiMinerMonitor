@@ -3,7 +3,7 @@ Monitor your mining rig using a Raspberry Pi!
 
 This is based on [this excellent guide from Adafruit](https://learn.adafruit.com/pi-hole-ad-blocker-with-pi-zero-w) for setting up a Raspberry Pi as a pihole ad blocking service.
 
-Currently the code supports Ethermine, but Flexpool should be pretty easy to setup.
+Currently the code supports Ethermine and Flexpool (thanks Max!), but other pools should be pretty easy to setup.
 
 Once it's running it will show the current unpaid balance, the USD value of that balance, and the USD-ETH value.  If the number of workers is <2 or the number of invalid shares is >= 3 then the unpaid balance will be red.
 
