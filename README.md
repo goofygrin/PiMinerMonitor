@@ -87,9 +87,9 @@ Run the following commands:
    ```
    sudo nano /etc/rc.local
    ```
-14. Add the following line above the "exit 0" line
+14. Add the following line above the "exit 0" line (selecting the pool and replacing your wallet)
    ```
-   sudo python3 ~pi/miner.py > ~pi/miner.log &
+   sudo python3 ~pi/miner.py ethermine|flexpool wallet > ~pi/miner.log &
    ```
 15. Press ctrl-x, select yes to save, and exit the file
 16. Reboot the pi to make sure this worked correctly
