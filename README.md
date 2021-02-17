@@ -7,7 +7,11 @@ Currently the code supports Ethermine, but Flexpool should be pretty easy to set
 
 Once it's running it will show the current unpaid balance, the USD value of that balance, and the USD-ETH value.  If the number of workers is <2 or the number of invalid shares is >= 3 then the unpaid balance will be red.
 
+![Main Display](https://github.com/goofygrin/PiMinerMonitor/blob/main/pictures/maindisplay.jpg?raw=true "Main Display")
+
 By pressing the top button of the display for a second, it will toggle to a more detailed view with the hash rate, number of workers, the stale and invalid share counts. Holding the button again will toggle back to the simpler display.
+
+![Detailed Display](https://github.com/goofygrin/PiMinerMonitor/blob/main/pictures/detaileddisplay.jpg?raw=true "Detailed Display")
 
 Both displays will show a 5 minute countdown to the next refresh.
 
