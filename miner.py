@@ -13,7 +13,7 @@ import adafruit_rgb_display.st7789 as st7789
 
 def get_ethermine_values(wallet):
     api_url = "https://api.ethermine.org/miner/{}/dashboard".format(wallet)
-    r = requests.get(em_api_url)
+    r = requests.get(api_url)
     data = json.loads(r.text)
     ret_value = {}
     ret_value["unpaid"] = data["data"]["currentStatistics"]["unpaid"]/1000000000000000000
@@ -35,10 +35,6 @@ pool = sys.argv[1]
 wallet = sys.argv[2]
 if wallet.startswith("0x"):
     wallet = wallet[2:]
-
-vals = get_ethermine_values(wallet)
-print(vals)
-exit
 
 value_api_url = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
 

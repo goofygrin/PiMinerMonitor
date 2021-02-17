@@ -71,7 +71,7 @@ Run the following commands:
 8. Once the pi is rebooted, ssh back into it
 9. Download the script
    ```
-   wget ...
+   wget https://raw.githubusercontent.com/goofygrin/PiMinerMonitor/main/miner.py
    ```
 10. Run the script, passing in the options
    ```
