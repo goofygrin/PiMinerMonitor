@@ -3,7 +3,7 @@ Monitor your mining rig using a Raspberry Pi!
 
 This is based on [this excellent guide from Adafruit](https://learn.adafruit.com/pi-hole-ad-blocker-with-pi-zero-w) for setting up a Raspberry Pi as a pihole ad blocking service.
 
-Currently the code supports Ethermine and Flexpool (thanks Max!), but other pools should be pretty easy to setup.
+Currently the code supports Ethermine, Flexpool (thanks Max!), and HiveOn, but other pools should be pretty easy to setup.
 
 Once it's running it will show the current unpaid balance, the USD value of that balance, and the USD-ETH value.  If the number of workers is <2 or the number of invalid shares is >= 3 then the unpaid balance will be red.
 
@@ -89,7 +89,7 @@ Run the following commands:
    ```
 14. Add the following line above the "exit 0" line (selecting the pool and replacing your wallet)
    ```
-   sudo python3 ~pi/miner.py ethermine|flexpool wallet > ~pi/miner.log &
+   sudo python3 ~pi/miner.py ethermine|flexpool|hiveon wallet > ~pi/miner.log &
    ```
 15. Press ctrl-x, select yes to save, and exit the file
 16. Reboot the pi to make sure this worked correctly
