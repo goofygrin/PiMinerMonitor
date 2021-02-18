@@ -74,7 +74,6 @@ def get_hiveon_values(wallet):
     for item in data["items"]:
         if 'staleCount' in item:
             stale_shares += int(item["staleCount"])
-        # Invalid count key needs to be verified. I don't have any invalid shares to verify at the moment
         if 'invalidCount' in item:
             invalid_shares += int(item['invalidCount'])
     ret_value["invalid_shares"] = str(invalid_shares)
