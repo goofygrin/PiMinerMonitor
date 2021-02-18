@@ -72,10 +72,8 @@ def get_hiveon_values(wallet):
     data = json.loads(r.text)
     invalid_shares, stale_shares = 0, 0
     for item in data["items"]:
-        if 'staleCount' in item:
-            stale_shares += int(item["staleCount"])
-        if 'invalidCount' in item:
-            invalid_shares += int(item['invalidCount'])
+        stale_shares += int(item["staleCount"]) if "staleCount" in item else 0
+        invalid_shares += int(item["invalidCount"]) if "invalidCount" in item else 0
     ret_value["invalid_shares"] = str(invalid_shares)
     ret_value["stale_shares"] = str(stale_shares)
     return ret_value
