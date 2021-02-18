@@ -94,7 +94,7 @@ while True:
 
     if counter == duration:
         try:
-            miner_data = pools.mine_values(wallet) if pool == "ethermine" else pools.get_flexpool_values(wallet) if pool == "flexpool" else pools.get_hiveon_values(wallet)
+            miner_data = pools.get_ethermine_values(wallet) if pool == "ethermine" else pools.get_flexpool_values(wallet) if pool == "flexpool" else pools.get_hiveon_values(wallet)
             r = requests.get(value_api_url)
             data = json.loads(r.text)
             eth_value = data["ethereum"]["usd"]
