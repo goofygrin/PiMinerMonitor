@@ -11,72 +11,8 @@ import board
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_rgb_display.st7789 as st7789
 
-def get_ethermine_values(wallet):
-    api_url = "https://api.ethermine.org/miner/{}/dashboard".format(wallet)
-    r = requests.get(api_url)
-    data = json.loads(r.text)
-    ret_value = {}
-    ret_value["unpaid"] = data["data"]["currentStatistics"]["unpaid"]/1000000000000000000
-    ret_value["workers"] = data["data"]["currentStatistics"]["activeWorkers"]
-    ret_value["reported_hashrate"] = data["data"]["currentStatistics"]["reportedHashrate"]/1000000
-    ret_value["actual_hashrate"] = data["data"]["currentStatistics"]["currentHashrate"]/1000000
-    ret_value["invalid_shares"] = data["data"]["currentStatistics"]["invalidShares"]
-    ret_value["stale_shares"] = data["data"]["currentStatistics"]["staleShares"]
-    return ret_value
+import pools
 
-def get_flexpool_values(wallet):
-    base_api_url = "https://flexpool.io/api/v1/miner/" + '0x' + wallet
-    ret_value = {}
-
-    # Get unpaid
-    r = requests.get(base_api_url+"/balance")
-    data = json.loads(r.text)
-    ret_value["unpaid"] = data["result"]
-
-    # Get unpaid
-    r = requests.get(base_api_url+"/workerCount")
-    data = json.loads(r.text)
-    ret_value["workers"] = data["result"]["online"]
-
-    # Get other stats
-    r = requests.get(base_api_url+"/stats")
-    data = json.loads(r.text)
-    ret_value["reported_hashrate"] = data["result"]["current"]["reported_hashrate"]/1000000
-    ret_value["actual_hashrate"] = data["result"]["current"]["effective_hashrate"]/1000000
-    ret_value["invalid_shares"] = data["result"]["daily"]["invalid_shares"]
-    ret_value["stale_shares"] = data["result"]["daily"]["stale_shares"]
-    return ret_value
-
-def get_hiveon_values(wallet):
-    base_api_url = "https://hiveon.net/api/v1/stats/"
-    ret_value = {}
-
-    # Get unpaid
-    r = requests.get(base_api_url+"miner/"+wallet+"/ETH/billing-acc")
-    data = json.loads(r.text)
-    ret_value["unpaid"] = data["totalUnpaid"]
-
-    # Get workers
-    r = requests.get(base_api_url+"workers-count?minerAddress="+wallet+"&coin=ETH&window=10m&limit=1")
-    data = json.loads(r.text)
-    ret_value["workers"] = data["items"][0]["count"]
-
-    # Get hashrate stats
-    r = requests.get(base_api_url+"hashrates?minerAddress="+wallet+"&coin=ETH&limit=1")
-    data = json.loads(r.text)
-    ret_value["reported_hashrate"] = data["items"][0]["reportedHashrate"]/1000000
-    ret_value["actual_hashrate"] = data["items"][0]["hashrate"]/1000000
-    
-    # Get shares stats
-    r = requests.get(base_api_url+"shares?minerAddress="+wallet+"&coin=ETH&window=10m&limit=144")
-    data = json.loads(r.text)
-    invalid_shares, stale_shares = 0, 0
-    for item in data["items"]:
-        stale_shares += int(item["staleCount"]) if "staleCount" in item else 0
-        invalid_shares += int(item["invalidCount"]) if "invalidCount" in item else 0
-    ret_value["invalid_shares"] = str(invalid_shares)
-    ret_value["stale_shares"] = str(stale_shares)
-    return ret_value
 
 if len(sys.argv) != 3 or (sys.argv[1] != "ethermine" and sys.argv[1] != "flexpool" and sys.argv[1] != "hiveon"):
     print("Usage: sudo python3 miner.py ethermine|flexpool|hiveon wallet")
@@ -158,7 +94,7 @@ while True:
 
     if counter == duration:
         try:
-            miner_data = get_ethermine_values(wallet) if pool == "ethermine" else get_flexpool_values(wallet) if pool == "flexpool" else get_hiveon_values(wallet)
+            miner_data = pools.mine_values(wallet) if pool == "ethermine" else pools.get_flexpool_values(wallet) if pool == "flexpool" else pools.get_hiveon_values(wallet)
             r = requests.get(value_api_url)
             data = json.loads(r.text)
             eth_value = data["ethereum"]["usd"]
