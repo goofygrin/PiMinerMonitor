@@ -79,7 +79,7 @@ Run the following commands:
    ```
 10. Run the script, passing in the options
    ```
-   sudo python3 miner.py <ethermine|flexpool> <wallet>
+   sudo python3 miner.py <ethermine|flexpool|hiveon> <wallet>
    ```
 11. The script should run and you should see the display light up and then start displaying the base data and a countdown.
 12. If everything is working, press ctrl-c to stop the process.
