@@ -31,7 +31,7 @@ def get_flexpool_values(wallet):
     # Get unpaid
     r = requests.get(base_api_url+"/balance")
     data = json.loads(r.text)
-    ret_value["unpaid"] = data["result"]
+    ret_value["unpaid"] = data["result"]/1000000000000000000
 
     # Get unpaid
     r = requests.get(base_api_url+"/workerCount")
@@ -50,6 +50,7 @@ def get_flexpool_values(wallet):
 def get_hiveon_values(wallet):
     base_api_url = "https://hiveon.net/api/v1/stats/"
     ret_value = {}
+    wallet = wallet.lower()
 
     # Get unpaid
     r = requests.get(base_api_url+"miner/"+wallet+"/ETH/billing-acc")
@@ -59,13 +60,13 @@ def get_hiveon_values(wallet):
     # Get workers
     r = requests.get(base_api_url+"workers-count?minerAddress="+wallet+"&coin=ETH&window=10m&limit=1")
     data = json.loads(r.text)
-    ret_value["workers"] = data["items"][0]["count"]
+    ret_value["workers"] = int(data["items"][0]["count"])
 
     # Get hashrate stats
     r = requests.get(base_api_url+"hashrates?minerAddress="+wallet+"&coin=ETH&limit=1")
     data = json.loads(r.text)
-    ret_value["reported_hashrate"] = data["items"][0]["reportedHashrate"]/1000000
-    ret_value["actual_hashrate"] = data["items"][0]["hashrate"]/1000000
+    ret_value["reported_hashrate"] = int(data["items"][0]["reportedHashrate"])/1000000
+    ret_value["actual_hashrate"] = int(data["items"][0]["hashrate"])/1000000
     
     # Get shares stats
     r = requests.get(base_api_url+"shares?minerAddress="+wallet+"&coin=ETH&window=10m&limit=144")
@@ -74,8 +75,8 @@ def get_hiveon_values(wallet):
     for item in data["items"]:
         stale_shares += int(item["staleCount"]) if "staleCount" in item else 0
         invalid_shares += int(item["invalidCount"]) if "invalidCount" in item else 0
-    ret_value["invalid_shares"] = str(invalid_shares)
-    ret_value["stale_shares"] = str(stale_shares)
+    ret_value["invalid_shares"] = invalid_shares
+    ret_value["stale_shares"] = stale_shares
     return ret_value
 
 if len(sys.argv) != 3 or (sys.argv[1] != "ethermine" and sys.argv[1] != "flexpool" and sys.argv[1] != "hiveon"):
