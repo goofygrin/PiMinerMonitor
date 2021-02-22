@@ -31,7 +31,7 @@ def get_flexpool_values(wallet):
     # Get unpaid
     r = requests.get(base_api_url+"/balance")
     data = json.loads(r.text)
-    ret_value["unpaid"] = data["result"]
+    ret_value["unpaid"] = data["result"]/1000000000000000000
 
     # Get unpaid
     r = requests.get(base_api_url+"/workerCount")
@@ -47,8 +47,40 @@ def get_flexpool_values(wallet):
     ret_value["stale_shares"] = data["result"]["daily"]["stale_shares"]
     return ret_value
 
-if len(sys.argv) != 3 or (sys.argv[1] != "ethermine" and sys.argv[1] != "flexpool"):
-    print("Usage: sudo python3 miner.py ethermine|flexpool wallet")
+def get_hiveon_values(wallet):
+    base_api_url = "https://hiveon.net/api/v1/stats/"
+    ret_value = {}
+    wallet = wallet.lower()
+
+    # Get unpaid
+    r = requests.get(base_api_url+"miner/"+wallet+"/ETH/billing-acc")
+    data = json.loads(r.text)
+    ret_value["unpaid"] = data["totalUnpaid"]
+
+    # Get workers
+    r = requests.get(base_api_url+"workers-count?minerAddress="+wallet+"&coin=ETH&window=10m&limit=1")
+    data = json.loads(r.text)
+    ret_value["workers"] = int(data["items"][0]["count"])
+
+    # Get hashrate stats
+    r = requests.get(base_api_url+"hashrates?minerAddress="+wallet+"&coin=ETH&limit=1")
+    data = json.loads(r.text)
+    ret_value["reported_hashrate"] = int(data["items"][0]["reportedHashrate"])/1000000
+    ret_value["actual_hashrate"] = int(data["items"][0]["hashrate"])/1000000
+    
+    # Get shares stats
+    r = requests.get(base_api_url+"shares?minerAddress="+wallet+"&coin=ETH&window=10m&limit=144")
+    data = json.loads(r.text)
+    invalid_shares, stale_shares = 0, 0
+    for item in data["items"]:
+        stale_shares += int(item["staleCount"]) if "staleCount" in item else 0
+        invalid_shares += int(item["invalidCount"]) if "invalidCount" in item else 0
+    ret_value["invalid_shares"] = invalid_shares
+    ret_value["stale_shares"] = stale_shares
+    return ret_value
+
+if len(sys.argv) != 3 or (sys.argv[1] != "ethermine" and sys.argv[1] != "flexpool" and sys.argv[1] != "hiveon"):
+    print("Usage: sudo python3 miner.py ethermine|flexpool|hiveon wallet")
     exit
 
 pool = sys.argv[1]
@@ -127,7 +159,7 @@ while True:
 
     if counter == duration:
         try:
-            miner_data = get_ethermine_values(wallet) if pool == "ethermine" else get_flexpool_values(wallet)
+            miner_data = get_ethermine_values(wallet) if pool == "ethermine" else get_flexpool_values(wallet) if pool == "flexpool" else get_hiveon_values(wallet)
             r = requests.get(value_api_url)
             data = json.loads(r.text)
             eth_value = data["ethereum"]["usd"]
